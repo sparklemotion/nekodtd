@@ -1,4 +1,4 @@
-/* 
+/*
  * (C) Copyright 2002-2003, Andy Clark.  All rights reserved.
  *
  * This file is distributed under an Apache style license. Please
@@ -16,25 +16,23 @@ import org.apache.xerces.impl.Constants;
 import org.apache.xerces.impl.XMLDTDScannerImpl;
 import org.apache.xerces.impl.XMLEntityManager;
 import org.apache.xerces.impl.XMLErrorReporter;
-
+import org.apache.xerces.impl.xs.util.SimpleLocator;
 import org.apache.xerces.util.NamespaceSupport;
 import org.apache.xerces.util.ParserConfigurationSettings;
 import org.apache.xerces.util.SymbolTable;
 import org.apache.xerces.util.XMLAttributesImpl;
 import org.apache.xerces.util.XMLStringBuffer;
-
 import org.apache.xerces.xni.Augmentations;
 import org.apache.xerces.xni.NamespaceContext;
 import org.apache.xerces.xni.QName;
 import org.apache.xerces.xni.XMLAttributes;
-import org.apache.xerces.xni.XMLDocumentHandler;
 import org.apache.xerces.xni.XMLDTDContentModelHandler;
 import org.apache.xerces.xni.XMLDTDHandler;
+import org.apache.xerces.xni.XMLDocumentHandler;
 import org.apache.xerces.xni.XMLLocator;
 import org.apache.xerces.xni.XMLResourceIdentifier;
 import org.apache.xerces.xni.XMLString;
 import org.apache.xerces.xni.XNIException;
-
 import org.apache.xerces.xni.parser.XMLDTDContentModelSource;
 import org.apache.xerces.xni.parser.XMLDTDSource;
 import org.apache.xerces.xni.parser.XMLEntityResolver;
@@ -46,7 +44,7 @@ import org.apache.xerces.xni.parser.XMLParserConfiguration;
  * An XNI-based parser configuration that can be used to parse DTD
  * documents to generate an XML representation of the DTD. This
  * configuration can be used directly in order to parse DTD documents
- * or can be used in conjunction with any XNI based tools, such as 
+ * or can be used in conjunction with any XNI based tools, such as
  * the Xerces2 implementation.
  * <p>
  * For complete usage information, refer to the documentation.
@@ -55,9 +53,9 @@ import org.apache.xerces.xni.parser.XMLParserConfiguration;
  *
  * @version $Id$
  */
-public class DTDConfiguration 
+public class DTDConfiguration
     extends ParserConfigurationSettings
-    implements XMLParserConfiguration, 
+    implements XMLParserConfiguration,
                XMLDTDHandler, XMLDTDContentModelHandler {
 
     //
@@ -67,11 +65,11 @@ public class DTDConfiguration
     // properties
 
     /** Entity resolver ("http://apache.org/xml/properties/internal/entity-resolver"). */
-    protected static final String ENTITY_RESOLVER = 
+    protected static final String ENTITY_RESOLVER =
         Constants.XERCES_PROPERTY_PREFIX + Constants.ENTITY_RESOLVER_PROPERTY;
 
     /** Locale property identifier ("http://apache.org/xml/properties/locale"). */
-    protected static final String LOCALE = 
+    protected static final String LOCALE =
         Constants.XERCES_PROPERTY_PREFIX + "locale";
 
     // element names
@@ -198,7 +196,7 @@ public class DTDConfiguration
 
     /** Attributes. */
     private final XMLAttributes fAttributes = new XMLAttributesImpl();
-        
+
     //
     // Constructors
     //
@@ -255,7 +253,7 @@ public class DTDConfiguration
         // HACK: Xerces 2.0.0
         if (XERCES_2_0_0) {
             // NOTE: These features should not be required but it causes a
-            //       problem if they're not there. This will be fixed in 
+            //       problem if they're not there. This will be fixed in
             //       subsequent releases of Xerces.
             String[] recognizedFeatures = new String[] {
                 "http://apache.org/xml/features/scanner/notify-builtin-refs",
@@ -264,7 +262,7 @@ public class DTDConfiguration
             // NOTE: This is a hack to get around a problem in the Xerces 2.0.0
             //       AbstractSAXParser. If it uses a parser configuration that
             //       does not have a SymbolTable, then it will remove *all*
-            //       attributes. This will be fixed in subsequent releases of 
+            //       attributes. This will be fixed in subsequent releases of
             //       Xerces.
             String SYMBOL_TABLE = "http://apache.org/xml/properties/internal/symbol-table";
             String[] recognizedProperties = new String[] {
@@ -275,11 +273,11 @@ public class DTDConfiguration
                                                             "org.apache.xerces.util.SymbolTable");
             setProperty(SYMBOL_TABLE, symbolTable);
         }
-        
+
         // HACK: Xerces 2.0.1
         if (XERCES_2_0_0 || XERCES_2_0_1 || XML4J_4_0_x) {
             // NOTE: These features should not be required but it causes a
-            //       problem if they're not there. This should be fixed in 
+            //       problem if they're not there. This should be fixed in
             //       subsequent releases of Xerces.
             String[] recognizedFeatures = new String[] {
                 "http://apache.org/xml/features/validation/schema/normalized-value",
@@ -287,7 +285,7 @@ public class DTDConfiguration
             };
             addRecognizedFeatures(recognizedFeatures);
         }
-        
+
     } // <init>()
 
     //
@@ -295,48 +293,59 @@ public class DTDConfiguration
     //
 
     /** Sets the error handler. */
+    @Override
     public void setErrorHandler(XMLErrorHandler handler) {
         fErrorHandler = handler;
     } // setErrorHandler(XMLErrorHandler)
 
     /** Returns the error handler. */
+    @Override
     public XMLErrorHandler getErrorHandler() {
         return fErrorHandler;
     } // getErrorHandler():XMLErrorHandler
 
     /** Sets the entity resolver. */
+    @Override
     public void setEntityResolver(XMLEntityResolver resolver) {
         setProperty(ENTITY_RESOLVER, fEntityResolver = resolver);
     } // setEntityResolver(XMLEntityResolver)
 
     /** Returns the entity resolver. */
+    @Override
     public XMLEntityResolver getEntityResolver() {
         return fEntityResolver;
     } // getEntityResolver():XMLEntityResolver
 
     /** Sets the document handler. */
+    @Override
     public void setDocumentHandler(XMLDocumentHandler handler) {
         fDocumentHandler = handler;
     } // setDocumentHandler(XMLDocumentHandler)
 
     /** Returns the document handler. */
+    @Override
     public XMLDocumentHandler getDocumentHandler() {
         return fDocumentHandler;
     } // getDocumentHandler():XMLDocumentHandler
 
     /** Sets the DTD handler. */
+    @Override
     public void setDTDHandler(XMLDTDHandler handler) {}
 
     /** Returns the DTD handler. */
+    @Override
     public XMLDTDHandler getDTDHandler() { return null; }
 
     /** Sets the DTD content model handler. */
+    @Override
     public void setDTDContentModelHandler(XMLDTDContentModelHandler handler) {}
 
     /** Returns the DTD content model handler. */
+    @Override
     public XMLDTDContentModelHandler getDTDContentModelHandler() { return null; }
 
     /** Sets the locale. */
+    @Override
     public void setLocale(Locale locale) {
         try {
             setProperty(LOCALE, locale);
@@ -347,6 +356,7 @@ public class DTDConfiguration
     } // setLocale(Locale)
 
     /** Returns the locale. */
+    @Override
     public Locale getLocale() {
         Locale locale = null;
         try {
@@ -360,6 +370,7 @@ public class DTDConfiguration
     } // getLocale():Locale
 
     /** Parses the DTD file specified by the given input source. */
+    @Override
     public void parse(XMLInputSource source) throws XNIException, IOException {
         fScanner.reset(this);
         fEntityManager.reset(this);
@@ -380,16 +391,19 @@ public class DTDConfiguration
     //
 
     /** Sets the DTD source. */
+    @Override
     public void setDTDSource(XMLDTDSource source) {
         fDTDSource = source;
     } // setDTDSource(XMLDTDSource)
 
     /** Returns the DTD source. */
+    @Override
     public XMLDTDSource getDTDSource() {
         return fDTDSource;
     } // getDTDSource():XMLDTDSource
 
     /** Start DTD. */
+    @Override
     public void startDTD(XMLLocator locator, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             String encoding = "UTF-8";
@@ -405,7 +419,7 @@ public class DTDConfiguration
                 };
                 Method method = cls.getMethod("startDocument", types);
                 Object[] params = {
-                    locator, encoding, 
+                    locator, encoding,
                     nscontext, augs
                 };
                 method.invoke(fDocumentHandler, params);
@@ -470,9 +484,10 @@ public class DTDConfiguration
      * Start external subset.
      * <p>
      * <strong>Note:</strong>
-     * This method is added or API compatibility with Xerces versions higher 
+     * This method is added or API compatibility with Xerces versions higher
      * than 2.0.1
      */
+    @Override
     public void startExternalSubset(XMLResourceIdentifier id,
                                     Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
@@ -494,6 +509,7 @@ public class DTDConfiguration
     } // startExternalSubset(XMLResourceIdentifier,Augmentations)
 
     /** End external subset. */
+    @Override
     public void endExternalSubset(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fDocumentHandler.endElement(E_EXTERNAL_SUBSET, augs);
@@ -501,6 +517,7 @@ public class DTDConfiguration
     } // endExternalSubset(Augmentations)
 
     /** End DTD. */
+    @Override
     public void endDTD(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fDocumentHandler.endElement(E_DTD, augs);
@@ -509,6 +526,7 @@ public class DTDConfiguration
     } // endDTD(Augmentations)
 
     /** Comment. */
+    @Override
     public void comment(XMLString text, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -524,6 +542,7 @@ public class DTDConfiguration
     } // comment(XMLString,Augmentations)
 
     /** Processing instruction. */
+    @Override
     public void processingInstruction(String target, XMLString data, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -536,6 +555,7 @@ public class DTDConfiguration
     } // processingInstruction(String,XMLString,Augmentations)
 
     /** Start parameter entity. */
+    @Override
     public void startParameterEntity(String name, XMLResourceIdentifier id, String encoding, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -556,6 +576,7 @@ public class DTDConfiguration
     } // startParameterEntity(String,XMLResourceIdentifier,String,Augmentations)
 
     /** Text declaration. */
+    @Override
     public void textDecl(String version, String encoding, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -570,6 +591,7 @@ public class DTDConfiguration
     } // textDecl(String,String,Augmentations)
 
     /** End parameter entity. */
+    @Override
     public void endParameterEntity(String name, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fDocumentHandler.endElement(E_PARAMETER_ENTITY, augs);
@@ -577,6 +599,7 @@ public class DTDConfiguration
     } // endParameterEntity(String,Augmentations)
 
     /** Element declaration. */
+    @Override
     public void elementDecl(String ename, String model, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -589,6 +612,7 @@ public class DTDConfiguration
     } // elementDecl(String,String,Augmentations)
 
     /** Start attribute list. */
+    @Override
     public void startAttlist(String ename, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -599,7 +623,8 @@ public class DTDConfiguration
     } // startAttlist(String,Augmentations)
 
     /** Attribute declaration. */
-    public void attributeDecl(String ename, String aname, String atype, String[] enum, String dtype, XMLString dvalue, XMLString nondvalue, Augmentations augs) throws XNIException {
+    @Override
+    public void attributeDecl(String ename, String aname, String atype, String[] _enum, String dtype, XMLString dvalue, XMLString nondvalue, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
             fAttributes.addAttribute(A_ENAME, "NMTOKEN", ename);
@@ -609,11 +634,11 @@ public class DTDConfiguration
             if (atype.equals("ENUMERATION")) {
                 StringBuffer str = new StringBuffer();
                 str.append('(');
-                for (int i = 0; i < enum.length; i++) {
+                for (int i = 0; i < _enum.length; i++) {
                     if (i > 0) {
                         str.append('|');
                     }
-                    str.append(enum[i]);
+                    str.append(_enum[i]);
                 }
                 str.append(')');
                 atype = str.toString();
@@ -634,14 +659,14 @@ public class DTDConfiguration
                 fAttributes.addAttribute(A_DEFAULT, "CDATA", dvalue.toString());
                 fAttributes.setSpecified(fAttributes.getLength()-1, true);
             }
-            if (enum == null || enum.length == 0) {
+            if (_enum == null || _enum.length == 0) {
                 fDocumentHandler.emptyElement(E_ATTRIBUTE_DECL, fAttributes, augs);
             }
             else {
                 fDocumentHandler.startElement(E_ATTRIBUTE_DECL, fAttributes, augs);
-                for (int i = 0; i < enum.length; i++) {
+                for (int i = 0; i < _enum.length; i++) {
                     fAttributes.removeAllAttributes();
-                    fAttributes.addAttribute(A_VALUE, "CDATA", enum[i]);
+                    fAttributes.addAttribute(A_VALUE, "CDATA", _enum[i]);
                     fAttributes.setSpecified(0, true);
                     fDocumentHandler.emptyElement(E_ENUMERATION, fAttributes, augs);
                 }
@@ -651,6 +676,7 @@ public class DTDConfiguration
     } // attributeDecl(String,String,Augmentations)
 
     /** End attribute list. */
+    @Override
     public void endAttlist(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fDocumentHandler.endElement(E_ATTLIST, augs);
@@ -658,6 +684,7 @@ public class DTDConfiguration
     } // endAttlist(Augmentations)
 
     /** Internal entity declaration. */
+    @Override
     public void internalEntityDecl(String name, XMLString value, XMLString nonvalue, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -670,6 +697,7 @@ public class DTDConfiguration
     } // internalEntityDecl(String,XMLString,XMLString,Augmentations)
 
     /** External entity declaration. */
+    @Override
     public void externalEntityDecl(String name, XMLResourceIdentifier id, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -688,6 +716,7 @@ public class DTDConfiguration
     } // externalEntityDecl(String,XMLResourceIdentifier,Augmentations)
 
     /** Unparsed entity declaration. */
+    @Override
     public void unparsedEntityDecl(String name, XMLResourceIdentifier id, String notation, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -710,6 +739,7 @@ public class DTDConfiguration
     } // externalEntityDecl(String,XMLResourceIdentifier,String,Augmentations)
 
     /** Notation declaration. */
+    @Override
     public void notationDecl(String name, XMLResourceIdentifier id, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -730,6 +760,7 @@ public class DTDConfiguration
     } // notationDecl(String,XMLResourceIdentifier,Augmentations)
 
     /** Start conditional section. */
+    @Override
     public void startConditional(short type, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             String conditional = type == CONDITIONAL_IGNORE ? "IGNORE" : "INCLUDE";
@@ -741,6 +772,7 @@ public class DTDConfiguration
     } // startConditional(short,Augmentations)
 
     /** Ignored characters. */
+    @Override
     public void ignoredCharacters(XMLString text, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -756,6 +788,7 @@ public class DTDConfiguration
     } // ignoredCharacters(XMLString,Augmentations)
 
     /** End conditional section. */
+    @Override
     public void endConditional(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fDocumentHandler.endElement(E_CONDITIONAL, augs);
@@ -767,16 +800,19 @@ public class DTDConfiguration
     //
 
     /** Sets the DTD content model source. */
+    @Override
     public void setDTDContentModelSource(XMLDTDContentModelSource source) {
         fDTDContentModelSource = source;
     } // setDTDContentModelSource(XMLDTDContentModelSource)
 
     /** Returns the DTD content model source. */
+    @Override
     public XMLDTDContentModelSource getDTDContentModelSource() {
         return fDTDContentModelSource;
     } // getDTDContentModelSource():XMLDTDContentModelSource
 
     /** Start content model. */
+    @Override
     public void startContentModel(String ename, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -787,6 +823,7 @@ public class DTDConfiguration
     } // startContentModel(String,Augmentations)
 
     /** End content model. */
+    @Override
     public void endContentModel(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fDocumentHandler.endElement(E_CONTENT_MODEL, augs);
@@ -794,6 +831,7 @@ public class DTDConfiguration
     } // endContentModel(Augmentations)
 
     /** Any content model. */
+    @Override
     public void any(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -802,14 +840,16 @@ public class DTDConfiguration
     } // any(Augmentations)
 
     /** Empty content model. */
+    @Override
     public void empty(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
             fDocumentHandler.emptyElement(E_EMPTY, fAttributes, augs);
         }
     } // empty(Augmentations)
-             
+
     /** Start mixed or children content model group. */
+    @Override
     public void startGroup(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -818,6 +858,7 @@ public class DTDConfiguration
     } // startGroup(Augmentations)
 
     /** Parsed character data for mixed content model. */
+    @Override
     public void pcdata(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -826,6 +867,7 @@ public class DTDConfiguration
     } // pcdata(Augmentations)
 
     /** Element reference in mixed or children content model. */
+    @Override
     public void element(String name, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fAttributes.removeAllAttributes();
@@ -836,6 +878,7 @@ public class DTDConfiguration
     } // element(String,Augmentations)
 
     /** Separator in mixed or children content model. */
+    @Override
     public void separator(short type, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             String groupType = type == SEPARATOR_CHOICE ? "|" : ",";
@@ -847,9 +890,10 @@ public class DTDConfiguration
     } // separator(short,Augmentations)
 
     /** Occurrence count in mixed or children content model. */
+    @Override
     public void occurrence(short type, Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
-            String occurs = type == OCCURS_ONE_OR_MORE ? "+" 
+            String occurs = type == OCCURS_ONE_OR_MORE ? "+"
                           : type == OCCURS_ZERO_OR_MORE ? "*"
                           : type == OCCURS_ZERO_OR_ONE ? "?" : null;
             fAttributes.removeAllAttributes();
@@ -860,6 +904,7 @@ public class DTDConfiguration
     } // occurrence(short,Augmentations)
 
     /** End mixed or children content model group. */
+    @Override
     public void endGroup(Augmentations augs) throws XNIException {
         if (fDocumentHandler != null) {
             fDocumentHandler.endElement(E_GROUP, augs);
