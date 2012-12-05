@@ -22,15 +22,15 @@
  <property name='contents' 
            value='${contents.misc},${contents.bats},${contents.jars},${contents.source},${contents.docs}'/>
 
- <!-- PATHS -->
- <path id="classpath">
-  <pathelement path="."/>
-  <fileset dir="lib">
-   <include name="*.jar"/>
-  </fileset>
-  <pathelement path="${jarfile}"/>
- </path>
-
+ <!-- PATHS -->
+ <path id="classpath">
+  <pathelement path="."/>
+  <fileset dir="lib">
+   <include name="*.jar"/>
+  </fileset>
+  <pathelement path="${jarfile}"/>
+ </path>
+
  <property name='package' value='org.cyberneko.dtd'/>
 
  <!-- TARGETS --> 
@@ -42,27 +42,27 @@
   <property name='contents.full' value='lib/**'/>
  </target>
 
- <target name='checkant'>
-  <available property="ant.present"
-   classname="org.apache.tools.ant.Main"
-   classpathref="classpath"/>
- </target>
-
- <target name='warn-noant' unless='ant.present'>
-	 <echo>----------------------------</echo>
-	 <echo>Ant task NOT included</echo>
-	 <echo/>
-	 <echo>Copy ant.jar to lib/ if you </echo>
-	 <echo>want the Ant task included  </echo>
-	 <echo>----------------------------</echo>
- </target>
-
- <target name='compile' depends='checkant,warn-noant'>
+ <target name='checkant'>
+  <available property="ant.present"
+   classname="org.apache.tools.ant.Main"
+   classpathref="classpath"/>
+ </target>
+
+ <target name='warn-noant' unless='ant.present'>
+	 <echo>----------------------------</echo>
+	 <echo>Ant task NOT included</echo>
+	 <echo/>
+	 <echo>Copy ant.jar to lib/ if you </echo>
+	 <echo>want the Ant task included  </echo>
+	 <echo>----------------------------</echo>
+ </target>
+
+ <target name='compile' depends='checkant,warn-noant'>
   <mkdir dir="bin/dtd"/>
-  <javac srcdir='src/dtd' destdir='bin/dtd' classpathref="classpath">
-   <include name='org/**'/>
-   <exclude name="**/anttasks/*" unless="ant.present"/>
-  </javac>
+  <javac srcdir='src/dtd' destdir='bin/dtd' classpathref="classpath">
+   <include name='org/**'/>
+   <exclude name="**/anttasks/*" unless="ant.present"/>
+  </javac>
  </target>
 
  <target name='jar' depends='compile'>
@@ -120,19 +120,19 @@
   <delete dir='bin/package-${name}' quiet='true'/>
  </target>
 
- <target name='dtd2xml' depends='jar'>
-  <taskdef name="dtd2xml" classpathref="classpath" classname="org.cyberneko.dtd.ant.DTD2XML"/>
-  <echo>Converting data/dtd/test.dtd to RNG, XSD and DTD formats ...</echo>
-  <dtd2xml classpathref="classpath" outputDir="." extension=".dtdx">
-   <fileset dir="data/dtd" includes="test.dtd"/>
-  </dtd2xml>
-  <xslt in="test.dtdx" style="data/dtd/dtdx2flat.xsl" out="test.flat"/>
-  <xslt in="test.flat" style="data/dtd/flat2rng.xsl" out="test.rng"/>
-  <echo>..test.rng generated</echo>
-  <xslt in="test.flat" style="data/dtd/flat2xsd.xsl" out="test.xsd"/>
-  <echo>..test.xsd generated</echo>
-  <xslt in="test.flat" style="data/dtd/dtdx2dtd.xsl" out="test.dtd"/>
-  <echo>..test.dtd (all entity refs expanded) generated</echo>
- </target>
-
+ <target name='dtd2xml' depends='jar'>
+  <taskdef name="dtd2xml" classpathref="classpath" classname="org.cyberneko.dtd.ant.DTD2XML"/>
+  <echo>Converting data/dtd/test.dtd to RNG, XSD and DTD formats ...</echo>
+  <dtd2xml classpathref="classpath" outputDir="." extension=".dtdx">
+   <fileset dir="data/dtd" includes="test.dtd"/>
+  </dtd2xml>
+  <xslt in="test.dtdx" style="data/dtd/dtdx2flat.xsl" out="test.flat"/>
+  <xslt in="test.flat" style="data/dtd/flat2rng.xsl" out="test.rng"/>
+  <echo>..test.rng generated</echo>
+  <xslt in="test.flat" style="data/dtd/flat2xsd.xsl" out="test.xsd"/>
+  <echo>..test.xsd generated</echo>
+  <xslt in="test.flat" style="data/dtd/dtdx2dtd.xsl" out="test.dtd"/>
+  <echo>..test.dtd (all entity refs expanded) generated</echo>
+ </target>
+
 </project>
