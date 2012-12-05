@@ -405,6 +405,9 @@ public class DTDConfiguration
     /** Start DTD. */
     @Override
     public void startDTD(XMLLocator locator, Augmentations augs) throws XNIException {
+        if (locator == null) {
+          locator = new SimpleLocator();
+        }
         if (fDocumentHandler != null) {
             String encoding = "UTF-8";
             NamespaceContext nscontext = new NamespaceSupport();
