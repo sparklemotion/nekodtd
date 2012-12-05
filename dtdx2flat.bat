@@ -1,0 +1,1 @@
+@java -cp lib\xml-apis.jar;lib\xalan.jar;lib\xercesImpl.jar org.apache.xalan.xslt.Process -IN %1 -XSL data/dtd/dtdx2flat.xsl

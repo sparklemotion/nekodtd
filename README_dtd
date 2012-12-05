@@ -1,0 +1,28 @@
+NekoDTD Readme
+==============
+
+Building
+--------
+
+You can build NekoDTD with the supplied build.bat file by
+typing the following:
+
+  > build -f build-dtd.xml (target ...)
+
+The default target will build the entire package.
+
+To build NekoDTD, you need Ant, Xerces2, and Xalan. The first
+time you try to build, it will tell you is required and where
+to download the necessary packages.
+
+Documentation
+-------------
+
+The documentation for NekoDTD is located at the following URL:
+
+  doc/dtd/index.html
+
+Contact Information
+-------------------
+
+Andy Clark <andyc@apache.org>

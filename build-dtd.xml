@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- $Id$ -->
+<project default='all' basedir='.'>
+
+ <!-- PROPERTIES -->
+ <property name='version'   value='0.1.11'/>
+ <property name='name'      value='nekodtd'/>
+ <property name='fullname'  value='${name}-${version}'/>
+ <property name='Name'      value='NekoDTD ${version}'/>
+ <property name='copyright' value='(C) Copyright 2002-2004, Andy Clark. All rights reserved.'/>
+  
+ <property name='jarfile' value='${name}.jar'/>
+ <property name='zipfile' value='${name}-${version}.zip'/>
+ <property name='tarfile' value='${name}-${version}.tar'/>
+ <property name='tgzfile' value='${name}-${version}.tar.gz'/>
+
+ <property name='contents.misc'   value='LICENSE,README_dtd,TODO_dtd,build.bat,build-dtd.xml'/>
+ <property name='contents.bats'   value='dtd2dtdx.bat,dtdx2dtd.bat,dtdx2flat.bat,flat2xsd.bat,dtd2xsd.bat,flat2rng.bat,dtd2rng.bat,dtd2xsd.sh'/>
+ <property name='contents.jars'   value='${jarfile}'/>
+ <property name='contents.source' value='src/dtd/**/*.java,src/dtd/**/*.properties'/>
+ <property name='contents.docs'   value='doc/style.css,doc/dtd/**,data/dtd/**'/>
+ <property name='contents' 
+           value='${contents.misc},${contents.bats},${contents.jars},${contents.source},${contents.docs}'/>
+
+ <!-- PATHS -->
+ <path id="classpath">
+  <pathelement path="."/>
+  <fileset dir="lib">
+   <include name="*.jar"/>
+  </fileset>
+  <pathelement path="${jarfile}"/>
+ </path>
+
+ <property name='package' value='org.cyberneko.dtd'/>
+
+ <!-- TARGETS --> 
+ <target name='universe' depends='full,all'/>
+
+ <target name='all' depends='zip,tgz'/>
+
+ <target name='full'>
+  <property name='contents.full' value='lib/**'/>
+ </target>
+
+ <target name='checkant'>
+  <available property="ant.present"
+   classname="org.apache.tools.ant.Main"
+   classpathref="classpath"/>
+ </target>
+
+ <target name='warn-noant' unless='ant.present'>
+	 <echo>----------------------------</echo>
+	 <echo>Ant task NOT included</echo>
+	 <echo/>
+	 <echo>Copy ant.jar to lib/ if you </echo>
+	 <echo>want the Ant task included  </echo>
+	 <echo>----------------------------</echo>
+ </target>
+
+ <target name='compile' depends='checkant,warn-noant'>
+  <mkdir dir="bin/dtd"/>
+  <javac srcdir='src/dtd' destdir='bin/dtd' classpathref="classpath">
+   <include name='org/**'/>
+   <exclude name="**/anttasks/*" unless="ant.present"/>
+  </javac>
+ </target>
+
+ <target name='jar' depends='compile'>
+  <copy todir='bin/dtd'>
+   <fileset dir='src/dtd' includes='**/*.properties'/>
+  </copy>
+  <jar jarfile='${jarfile}' basedir='bin/dtd' 
+       includes='org/**/*.class,org/**/*.properties'/>
+ </target> 
+
+ <target name='package' depends='jar,doc'>
+  <mkdir dir='bin/package/${fullname}'/>
+  <copy todir='bin/package/${fullname}'>
+   <fileset dir='.' includes='${contents},${contents.full}'/>
+   <fileset dir='bin' includes='${contents.jars}'/>
+  </copy>
+ </target>
+
+ <target name='package-nodir'>
+  <mkdir dir='bin/package-${name}'/>
+  <copy todir='bin/package-${name}'>
+   <fileset dir='bin/package/${fullname}' includes='**'/>
+  </copy>
+ </target>
+
+ <target name='zip' depends='package'>
+  <zip zipfile='${zipfile}' basedir='bin/package' includes='${fullname}/**'/>
+ </target>
+
+ <target name='tgz' depends='package'>
+  <tar tarfile='${tarfile}' basedir='bin/package' includes='${fullname}/**'/>
+  <gzip zipfile='${tgzfile}' src='${tarfile}'/>
+  <delete file='${tarfile}'/>
+ </target>
+
+ <target name='doc' unless='docs.done'>
+  <mkdir dir='doc/dtd/javadoc'/>
+  <javadoc packagenames='${package},${package}.parsers'
+           sourcepath='src/dtd' destdir='doc/dtd/javadoc'
+           author='true' version='true' use='true'
+           windowtitle="${Name} Implementation"
+           doctitle="${Name}"
+           bottom="${copyright}" 
+           />
+  <property name='docs.done' value='true'/>
+ </target>
+ 
+ <target name='clean'>
+  <delete dir='bin/dtd' quiet='true'/>
+  <delete dir='doc/dtd/javadoc' quiet='true'/>
+  <delete quiet='true'>
+   <fileset dir='.' includes='${name}*.jar,${name}*.zip,${name}*.tar.gz'/>
+  </delete>
+  <delete dir='bin/package' quiet='true'/>
+  <delete dir='bin/package-${name}' quiet='true'/>
+ </target>
+
+ <target name='dtd2xml' depends='jar'>
+  <taskdef name="dtd2xml" classpathref="classpath" classname="org.cyberneko.dtd.ant.DTD2XML"/>
+  <echo>Converting data/dtd/test.dtd to RNG, XSD and DTD formats ...</echo>
+  <dtd2xml classpathref="classpath" outputDir="." extension=".dtdx">
+   <fileset dir="data/dtd" includes="test.dtd"/>
+  </dtd2xml>
+  <xslt in="test.dtdx" style="data/dtd/dtdx2flat.xsl" out="test.flat"/>
+  <xslt in="test.flat" style="data/dtd/flat2rng.xsl" out="test.rng"/>
+  <echo>..test.rng generated</echo>
+  <xslt in="test.flat" style="data/dtd/flat2xsd.xsl" out="test.xsd"/>
+  <echo>..test.xsd generated</echo>
+  <xslt in="test.flat" style="data/dtd/dtdx2dtd.xsl" out="test.dtd"/>
+  <echo>..test.dtd (all entity refs expanded) generated</echo>
+ </target>
+
+</project>

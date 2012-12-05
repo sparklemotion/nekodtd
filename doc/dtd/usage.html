@@ -1,0 +1,140 @@
+<title>NekoDTD | Usage Instructions</title>
+<link rel=stylesheet type=text/css href=../style.css>
+<style type='text/css'>
+.note { font-style: italic }
+</style>
+
+<h1>Usage Instructions</h1>
+<div class='navbar'>
+[<a href='../index.html'>Home</a>]
+[
+<a href='index.html'>Top</a>
+|
+Usage
+|
+<a href='conversions.html'>Conversions</a>
+|
+<a href='javadoc/index.html'>JavaDoc</a>
+|
+<a href='changes.html'>Changes</a>
+]
+</div>
+
+<h2>Overview</h2>
+<p>
+NekoDTD comes with everything that you need to generate XML
+representations of DTDs. Your application can use the included
+NekoDTD parsers to parse a DTD and access the information using
+standard APIs such as the 
+<a href='http://www.w3.org/DOM/DOMTR'>Document Object Model</a> 
+(DOM) or the <a href='http://sax.sourceforge.net/'>Simple API 
+for XML</a> (SAX). Instead of writing custom code to access
+a DTD's information, the application can simply traverse a
+DOM tree representation of the grammar or pull the required
+information from the callbacks to the registered SAX handlers.
+<p>
+In addition, by using XSLT, many grammar transformations are 
+possible without the need for custom code. To this end, NekoDTD 
+includes stylesheets that allow you to transform the XML 
+representation of your favorite DTD to a "flattened" DTD or to 
+an equivalent XML Schema or Relax NG grammar. 
+[<span class='note'>Note: Other grammar formats may be supported 
+in future releases. If you write a new stylesheet and want it 
+included with NekoDTD, please 
+<a href='mailto:andyc@apache.org'>contact me</a>.</span>]
+<p>
+The format of the generated document conforms to the "DTD for 
+XML" (DTDx) grammar defined by the author. This format maps 
+directly to the XNI callbacks of the <code>XMLDTDHandler</code> 
+and <code>XMLDTDContentModel</code> interfaces and provides all
+of the information that is available through these interfaces. 
+The <a href='../../data/dtd/dtdx.dtd'>grammar</a> for DTDx, in 
+DTD format, is included with the NekoDTD package.
+<p class='note'>
+<strong>Note:</strong>
+The NekoDTD parser configuration is designed to be used with the 
+Xerces2 reference implementation of the XNI framework. Therefore, 
+it is assumed that you have a version of Xerces version 2.0.0 (or 
+higher) installed on your system. If you do not already have
+Xerces2, you can download the latest version from 
+<a href='http://xml.apache.org/dist/xerces-j/'>Apache</a>.
+
+<h2>Convenience Parser Classes</h2>
+<p>
+DOM and SAX parser classes are included in the 
+<code>org.cyberneko.dtd.parsers</code> package for convenience. Both 
+parsers use the <code>DTDConfiguration</code> class to be able to 
+parse DTD documents. The following example shows how to use the 
+NekoDTD <code>DOMParser</code> directly:
+<pre class='code'>
+<span class='code-keyword'>package</span> sample<span class='code-punct'>;</span>
+
+<span class='code-keyword'>import</span> org.cyberneko.dtd.parsers.DOMParser<span class='code-punct'>;</span>
+<span class='code-keyword'>import</span> org.w3c.dom.Document<span class='code-punct'>;</span>
+<span class='code-keyword'>import</span> org.w3c.dom.Node<span class='code-punct'>;</span>
+
+<span class='code-keyword'>public class</span> TestDTDDOM <span class='code-punct'>{</span>
+    <span class='code-keyword'>public static void</span> main<span class='code-punct'>(</span>String<span class='code-punct'>[]</span> argv<span class='code-punct'>)</span> <span class='code-keyword'>throws</span> Exception <span class='code-punct'>{</span>
+        DOMParser parser <span class='code-punct'>=</span> <span class='code-keyword'>new</span> DOMParser<span class='code-punct'>();</span>
+        <span class='code-keyword'>for</span> <span class='code-punct'>(</span><span class='code-keyword'>int</span> i <span class='code-punct'>=</span> 0<span class='code-punct'>;</span> i <span class='code-punct'><</span> argv<span class='code-punct'>.</span>length<span class='code-punct'>;</span> i<span class='code-punct'>++) {</span>
+            parser<span class='code-punct'>.</span>parse<span class='code-punct'>(</span>argv<span class='code-punct'>[</span>i<span class='code-punct'>]);</span>
+            print<span class='code-punct'>(</span>parser<span class='code-punct'>.</span>getDocument<span class='code-punct'>(),</span> <span class='code-string'>""</span><span class='code-punct'>);</span>
+        <span class='code-punct'>}</span>
+    <span class='code-punct'>}</span>
+    <span class='code-keyword'>public static void</span> print<span class='code-punct'>(</span>Node node<span class='code-punct'>,</span> String indent<span class='code-punct'>) {</span>
+        System<span class='code-punct'>.</span>out<span class='code-punct'>.</span>println<span class='code-punct'>(</span>indent<span class='code-punct'>+</span>node<span class='code-punct'>.</span>getClass<span class='code-punct'>().</span>getName<span class='code-punct'>());</span>
+        Node child <span class='code-punct'>=</span> node<span class='code-punct'>.</span>getFirstChild<span class='code-punct'>();</span>
+        <span class='code-keyword'>while</span> <span class='code-punct'>(</span>child <span class='code-punct'>!=</span> <span class='code-keyword'>null</span><span class='code-punct'>) {</span>
+            print<span class='code-punct'>(</span>child<span class='code-punct'>,</span> indent<span class='code-punct'>+</span><span class='code-string'>" "</span><span class='code-punct'>);</span>
+            child <span class='code-punct'>=</span> child<span class='code-punct'>.</span>getNextSibling<span class='code-punct'>();</span>
+        <span class='code-punct'>}
+    }</span>
+<span class='code-punct'>}</span>
+</pre>
+<!--
+<p>
+Running this program produces the following output:
+[<strong>Note:</strong> The classpath should be 
+contiguous. It is split among separate lines in this example to make 
+it easier to read.]
+<pre class='cmdline'>
+<span class='cmdline-prompt'>&gt;</span> <span class='cmdline-cmd'>java -cp nekohtml.jar;nekohtmlSamples.jar;
+           xmlParserAPIs.jar;xercesImpl.jar
+       sample.TestHTMLDOM data/html/test01.html</span>
+org.apache.html.dom.HTMLDocumentImpl
+ org.apache.html.dom.HTMLHtmlElementImpl
+  org.apache.html.dom.HTMLBodyElementImpl
+   org.apache.xerces.dom.TextImpl
+</pre>
+<p>
+This source code is included in the <code>src/sample/</code> directory.
+-->
+
+<h2>Custom Parser Classes</h2>
+<p>
+Alternatively, you can construct any XNI-based parser class
+using the <code>DTDConfiguration</code> parser configuration class
+found in the <code>org.cyberneko.dtd</code> package. The following
+example shows how to extend the abstract SAX parser provided with
+the Xerces2 implementation by passing the NekoDTD parser 
+configuration to the base class in the constructor.
+<pre class='code'>
+<span class='code-keyword'>package</span> sample<span class='code-punct'>;</span>
+
+<span class='code-keyword'>import</span> org.apache.xerces.parsers.AbstractSAXParser<span class='code-punct'>;</span>
+<span class='code-keyword'>import</span> org.cyberneko.dtd.DTDConfiguration<span class='code-punct'>;</span>
+
+<span class='code-keyword'>public class</span> DTDSAXParser <span class='code-keyword'>extends</span> AbstractSAXParser <span class='code-punct'>{</span>
+    <span class='code-keyword'>public</span> DTDSAXParser<span class='code-punct'>() {</span>
+        <span class='code-keyword'>super</span><span class='code-punct'>(</span><span class='code-keyword'>new</span> DTDConfiguration<span class='code-punct'>());</span>
+    <span class='code-punct'>}</span>
+<span class='code-punct'>}</span>
+</pre>
+<!--
+<p>
+This source code is included in the <code>src/sample/</code> directory.
+-->
+
+<div class='copyright'>
+(C) Copyright 2002-2004, Andy Clark. All rights reserved.
+</div>

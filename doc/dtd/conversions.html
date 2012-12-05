@@ -1,0 +1,314 @@
+<title>NekoDTD | Converting DTD Grammars</title>
+<link rel=stylesheet type=text/css href=../style.css>
+<style type='text/css'>
+.note { font-style: italic }
+</style>
+
+<h1>Converting DTD Grammars</h1>
+<div class='navbar'>
+[<a href='../index.html'>Home</a>]
+[
+<a href='index.html'>Top</a>
+|
+<a href='usage.html'>Usage</a>
+|
+Conversions
+|
+<a href='javadoc/index.html'>JavaDoc</a>
+|
+<a href='changes.html'>Changes</a>
+]
+</div>
+
+<h2>Table of Contents</h2>
+<ul>
+ <li><a href='#stylesheets'>Provided Stylesheets</a>
+ <li><a href='#transforming'>Performing a Transformation</a>
+ <li><a href='#batchfiles'>Convenience Batch Files</a>
+ <li><a href='#conversion'>Converting Sample DTD to Other Grammar Formats</a>
+  <ul>
+   <li><a href='#conversion.dtd'>Sample DTD</a>
+   <li><a href='#conversion.dtd2xsd'>Converting DTD to XML Schema</a>
+   <li><a href='#conversion.dtd2rng'>Converting DTD to Relax NG</a>
+   <li><a href='#conversion.more'>More Powerful Conversions</a>
+  </ul>
+</ul>
+
+<hr>
+
+<a name='stylesheets'></a>
+<h2>Provided Stylesheets</h2>
+<p>
+Using XSLT, a DTDx document can easily be transformed to another
+grammar format. A DTD grammar can be flattened or converted to
+another format like XML Schema or Relax NG. To make this easier, 
+NekoDTD includes the following stylesheets in the package:
+<ul>
+ <li>Directory <tt>data/dtd/</tt>
+  <ul>
+   <li>File <u><tt>dtdx2dtd.xsl</tt></u>
+       <p>
+       Converts an XML document in DTDx format to a flattened DTD 
+       file. This stylesheet is useful for converting a DTD that
+       is broken up into multiple entities (e.g. 
+       <a href='http://www.oasis-open.org/docbook/'>DocBook</a>) 
+       into a single DTD file.
+   <li>File <u><tt>dtdx2flat.xsl</tt></u>
+       <p>
+       Flattens the full DTDx format to a
+       simpler, but equivalent, format. This stylesheet removes
+       all occurrences of <code>externalSubset</code>,
+       <code>parameterEntity</code>, and similar tags, making
+       all declarations appear as if they appeared in the
+       internal subset of the document. Processing the DTDx file 
+       with this stylesheet first simplifies any further
+       processing performed on the DTDx document.
+   <li>File <u><tt>flat2xsd.xsl</tt></u>
+       <p>
+       Converts a flattened DTDx document to an equivalent
+       XML Schema grammar.
+       <p class='note'>
+       <strong>Note:</strong>
+       The DTDx document <strong>must</strong> be processed with 
+       the <tt>dtdx2flat.xsl</tt> stylesheet before conversion to 
+       XML Schema using this stylesheet. If not, the XSLT
+       stylesheet will (most likely) signal an error, reminding
+       you to flatten the DTDx file first.
+   <li>File <u><tt>flat2rng.xsl</tt></u>
+       <p>
+       Converts a flattened DTDx document to an equivalent
+       Relax NG grammar.
+       <p class='note'>
+       <strong>Note:</strong>
+       The DTDx document <strong>must</strong> be processed with 
+       the <tt>dtdx2flat.xsl</tt> stylesheet before conversion to 
+       Relax NG using this stylesheet. If not, the XSLT
+       stylesheet will (most likely) signal an error, reminding
+       you to flatten the DTDx file first.
+  </ul>
+</ul>
+
+<a name='transforming'></a>
+<h2>Performing a Transformation</h2>
+<p>
+In order to convert a DTD file to another format, use the
+following steps:
+<ol>
+ <li>Parse the DTD file with NekoDTD and serialize the XML 
+     representation to a file.
+ <li>Process output of first step with stylesheet of choice using
+     an XSLT processor, such as 
+     <a href='http://xml.apache.org/dist/xalan-j'>Xalan</a>.
+</ol>
+
+<a name='batchfiles'></a>
+<h2>Convenience Batch Files</h2>
+<p>
+To eliviate the burden of performing these steps, the NekoDTD
+package includes a number of useful batch files to run these
+steps on Windows. [<span class='note'>Only one shell script
+is available at this time. But it would be very easy to port
+the <tt>.bat</tt> files to <tt>.sh</tt>.</span>] The following
+batch files are included:
+<ul>
+ <li>Directory <tt>./</tt>
+  <ul>
+   <li>File <u><tt>dtd2dtdx.bat</tt></u>
+       <p>
+       Parses the given DTD document and writes the generated DTDx
+       document to standard out.
+       The output can then be re-directed to a file for use 
+       with subsequent processing.
+   <li>File <u><tt>dtdx2dtd.bat</tt></u>
+       <p>
+       Parses the given DTDx document, performs an XML 
+       transformation using the <tt>dtdx2dtd.xsl</tt> XSLT
+       stylesheet, and writes the generated document to 
+       standard out.
+       The output can then be re-directed to a file for use 
+       with subsequent processing.
+   <li>File <u><tt>dtdx2flat.bat</tt></u>
+       <p>
+       Parses the given DTDx document, performs an XML 
+       transformation using the <tt>dtdx2flat.xsl</tt> XSLT
+       stylesheet, and writes the generated document to 
+       standard out.
+       The output can then be re-directed to a file for use 
+       with subsequent processing.
+   <li>File <u><tt>flat2xsd.bat</tt></u>
+       <p>
+       Parses the given DTDx document, performs an XML 
+       transformation using the <tt>flat2xsd.xsl</tt> XSLT
+       stylesheet, and writes the generated document to 
+       standard out.
+       The output can then be re-directed to a file for use 
+       with subsequent processing.
+   <li>File <u><tt>flat2rng.bat</tt></u>
+       <p>
+       Parses the given DTDx document, performs an XML 
+       transformation using the <tt>flat2rng.xsl</tt> XSLT
+       stylesheet, and writes the generated document to 
+       standard out.
+       The output can then be re-directed to a file for use 
+       with subsequent processing.
+   <li>Files <u><tt>dtd2xsd.bat</tt></u> and <u><tt>dtd2xsd.sh</tt></u> 
+       <p>
+       Parsers the given DTD document, flattens the resultant
+       DTDx document, transforms the DTDx to XML Schema, and
+       writes the final generated document to standard out.
+       The output can then be re-directed to a file for use 
+       with subsequent processing.
+   <li>File <u><tt>dtd2rng.bat</tt></u>
+       <p>
+       Parsers the given DTD document, flattens the resultant
+       DTDx document, transforms the DTDx to Relax NG, and
+       writes the final generated document to standard out.
+       The output can then be re-directed to a file for use 
+       with subsequent processing.
+  </ul>
+</ul>
+<p>
+These batch files assume that you have downloaded Xerces2 and
+Xalan and placed the appropriate Jar files in the <tt>lib/</tt>
+directory. <span class='note'><strong>Note:</strong> NekoDTD does 
+<strong>not</strong> provide these Jar files.</span>
+
+<a name='conversion'></a>
+<h2>Converting Sample DTD to Other Grammar Types</h2>
+<p>
+The <tt>data/dtd/</tt> directory contains a sample DTD grammar
+called <tt>test.dtd</tt>; an XML document called <tt>test.xml</tt>
+that references the DTD for validation in the <tt>DOCTYPE</tt> 
+line; and an XML document called <tt>test-schema.xml</tt> that 
+references the generated XML Schema grammar called <tt>test.xsd</tt> 
+via the <tt>xsi:noNamespaceSchemaLocation</tt> attribute. 
+<em>(There is no need to include a separate document file for
+Relax NG because Relax NG does not currently define a way of
+associating a grammar within the document instance.)</em> For
+convenience, a copy of the DTD grammar converted to XML Schema
+and Relax NG is also provided and are called <tt>test.xsd</tt>
+and <tt>test.rng</tt>, respectively.
+
+<a name='conversion.dtd'></a>
+<h3>Sample DTD</h3>
+<p>
+The sample DTD grammar looks like this:
+<pre class='xml'>
+&lt;!ELEMENT root (foo|(bar,baz)+)*>
+&lt;!ATTLIST root version CDATA #FIXED '1.0'>
+&lt;!ELEMENT foo EMPTY>
+&lt;!ELEMENT bar (#PCDATA)>
+&lt;!ELEMENT baz (#PCDATA|mumble)*>
+&lt;!ELEMENT mumble ANY>
+</pre>
+
+<a name='conversion.dtd2xsd'></a>
+<h3>Converting DTD to XML Schema</h3>
+<p>
+Running the <tt>dtd2xsd</tt> batch file as shown with the sample 
+DTD grammar:
+<pre class='cmdline'>
+<span class='cmdline-prompt'>></span> <span class='cmdline-cmd'>dtd2xsd data/dtd/test.dtd</span>
+</pre>
+<p>
+produces the following equivalent XML Schema grammar:
+<pre class='xml'>
+<span class='xml-markup'>&lt;?xml version="1.0" encoding="UTF-8" ?></span> 
+<span class='xml-markup'>&lt;!--</span> <span class='xml-comment'>Generated from data/dtd/test.dtd</span> <span class='xml-markup'>--></span>
+<span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:schema</span> <span class='xml-aname-xmlns'>xmlns:xsd</span><span class='xml-markup'>="</span><span class='xml-avalue-xmlns'>http://www.w3.org/2001/XMLSchema</span><span class='xml-markup'>"></span>
+ <span class='xml-markup'>&lt;!--</span> <span class='xml-comment'>&lt;!ELEMENT root (foo|(bar,baz)+)*></span> <span class='xml-markup'>--></span>
+ <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:element</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>root</span><span class='xml-markup'>"></span>
+  <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:complexType</span><span class='xml-markup'>></span>
+   <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:choice</span> <span class='xml-aname'>minOccurs</span><span class='xml-markup'>="</span><span class='xml-avalue'>0</span><span class='xml-markup'>"</span> <span class='xml-aname'>maxOccurs</span><span class='xml-markup'>="</span><span class='xml-avalue'>unbounded</span><span class='xml-markup'>"></span>
+    <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:element</span> <span class='xml-aname'>ref</span><span class='xml-markup'>="</span><span class='xml-avalue'>foo</span><span class='xml-markup'>" /></span>
+    <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:sequence</span> <span class='xml-aname'>minOccurs</span><span class='xml-markup'>="</span><span class='xml-avalue'>1</span><span class='xml-markup'>"</span> <span class='xml-aname'>maxOccurs</span><span class='xml-markup'>="</span><span class='xml-avalue'>unbounded</span><span class='xml-markup'>"></span>
+     <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:element</span> <span class='xml-aname'>ref</span><span class='xml-markup'>="</span><span class='xml-avalue'>bar</span><span class='xml-markup'>" /></span>
+     <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:element</span> <span class='xml-aname'>ref</span><span class='xml-markup'>="</span><span class='xml-avalue'>baz</span><span class='xml-markup'>" /></span>
+    <span class='xml-markup'>&lt;/</span><span class='xml-ename'>xsd:sequence</span><span class='xml-markup'>></span>
+   <span class='xml-markup'>&lt;/</span><span class='xml-ename'>xsd:choice</span><span class='xml-markup'>></span>
+   <span class='xml-markup'>&lt;!--</span> <span class='xml-comment'>&lt;!ATTLIST root version CDATA #FIXED "1.0"></span> <span class='xml-markup'>--></span>
+   <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:attribute</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>version</span><span class='xml-markup'>"</span> <span class='xml-aname'>fixed</span><span class='xml-markup'>="</span><span class='xml-avalue'>1.0</span><span class='xml-markup'>"></span>
+    <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:simpleType</span><span class='xml-markup'>></span>
+     <span class='xml-markup'>&lt;</span><span class='xml-ename'>xsd:restriction</span> <span class='xml-aname'>base</span><span class='xml-markup'>="</span><span class='xml-avalue'>xsd:string</span><span class='xml-markup'>" /></span>
+    <span class='xml-markup'>&lt;/</span><span class='xml-ename'>xsd:simpleType</span><span class='xml-markup'>></span>
+   <span class='xml-markup'>&lt;/</span><span class='xml-ename'>xsd:attribute</span><span class='xml-markup'>></span>
+  <span class='xml-markup'>&lt;/</span><span class='xml-ename'>xsd:complexType</span><span class='xml-markup'>></span>
+ <span class='xml-markup'>&lt;/</span><span class='xml-ename'>xsd:element</span><span class='xml-markup'>></span>
+ ...
+<span class='xml-markup'>&lt;/</span><span class='xml-ename'>xsd:schema</span><span class='xml-markup'>></span>
+</pre>
+<p>
+This can be a very convenient way to convert existing DTDs in
+order to transition to using XML Schema. 
+
+<a name='conversion.dtd2rng'></a>
+<h3>Converting DTD to Relax NG</h3>
+<p>
+Running the <tt>dtd2rng</tt> batch file as shown with the sample 
+DTD grammar:
+<pre class='cmdline'>
+<span class='cmdline-prompt'>></span> <span class='cmdline-cmd'>dtd2rng data/dtd/test.dtd</span>
+</pre>
+<p>
+produces the following equivalent Relax NG grammar:
+<pre class='xml'>
+<span class='xml-markup'>&lt;?xml version="1.0" encoding="UTF-8" ?></span> 
+<span class='xml-markup'>&lt;!--</span> <span class='xml-comment'>Generated from data/dtd/test.dtd</span> <span class='xml-markup'>--></span>
+<span class='xml-markup'>&lt;</span><span class='xml-ename'>grammar</span> <span class='xml-aname-xmlns'>xmlns</span><span class='xml-markup'>="</span><span class='xml-avalue-xmlns'>http://relaxng.org/ns/structure/1.0</span><span class='xml-markup'>"</span> 
+         <span class='xml-aname'>datatypeLibrary</span><span class='xml-markup'>="</span><span class='xml-avalue'>http://www.w3.org/2001/XMLSchema-datatypes</span><span class='xml-markup'>"></span>
+ <span class='xml-markup'>&lt;</span><span class='xml-ename'>start</span><span class='xml-markup'>></span>
+  <span class='xml-markup'>&lt;</span><span class='xml-ename'>choice</span><span class='xml-markup'>></span>
+   <span class='xml-markup'>&lt;</span><span class='xml-ename'>element</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>root</span><span class='xml-markup'>"></span>
+    <span class='xml-markup'>&lt;</span><span class='xml-ename'>ref</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>T_root</span><span class='xml-markup'>" /> </span>
+   <span class='xml-markup'>&lt;/</span><span class='xml-ename'>element</span><span class='xml-markup'>></span>
+   ...
+  <span class='xml-markup'>&lt;/</span><span class='xml-ename'>choice</span><span class='xml-markup'>></span>
+ <span class='xml-markup'>&lt;/</span><span class='xml-ename'>start</span><span class='xml-markup'>></span>
+ <span class='xml-markup'>&lt;!--</span> <span class='xml-comment'>&lt;!ELEMENT root (foo|(bar,baz)+)*></span> <span class='xml-markup'>--></span>
+ <span class='xml-markup'>&lt;</span><span class='xml-ename'>define</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>T_root</span><span class='xml-markup'>"></span>
+  <span class='xml-markup'>&lt;</span><span class='xml-ename'>zeroOrMore</span><span class='xml-markup'>></span>
+   <span class='xml-markup'>&lt;</span><span class='xml-ename'>choice</span><span class='xml-markup'>></span>
+    <span class='xml-markup'>&lt;</span><span class='xml-ename'>element</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>foo</span><span class='xml-markup'>"></span>
+     <span class='xml-markup'>&lt;</span><span class='xml-ename'>ref</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>T_foo</span><span class='xml-markup'>" /></span>
+    <span class='xml-markup'>&lt;/</span><span class='xml-ename'>element</span><span class='xml-markup'>></span>
+    <span class='xml-markup'>&lt;</span><span class='xml-ename'>oneOrMore</span><span class='xml-markup'>></span>
+     <span class='xml-markup'>&lt;</span><span class='xml-ename'>group</span><span class='xml-markup'>></span>
+      <span class='xml-markup'>&lt;</span><span class='xml-ename'>element</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>bar</span><span class='xml-markup'>"></span>
+       <span class='xml-markup'>&lt;</span><span class='xml-ename'>ref</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>T_bar</span><span class='xml-markup'>" /></span>
+      <span class='xml-markup'>&lt;/</span><span class='xml-ename'>element</span><span class='xml-markup'>></span>
+      <span class='xml-markup'>&lt;</span><span class='xml-ename'>element</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>baz</span><span class='xml-markup'>"></span>
+       <span class='xml-markup'>&lt;</span><span class='xml-ename'>ref</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>T_baz</span><span class='xml-markup'>" /></span>
+      <span class='xml-markup'>&lt;/</span><span class='xml-ename'>element</span><span class='xml-markup'>></span>
+     <span class='xml-markup'>&lt;/</span><span class='xml-ename'>group</span><span class='xml-markup'>></span>
+    <span class='xml-markup'>&lt;/</span><span class='xml-ename'>oneOrMore</span><span class='xml-markup'>></span>
+   <span class='xml-markup'>&lt;/</span><span class='xml-ename'>choice</span><span class='xml-markup'>></span>
+  <span class='xml-markup'>&lt;/</span><span class='xml-ename'>zeroOrMore</span><span class='xml-markup'>></span>
+  <span class='xml-markup'>&lt;!--</span> <span class='xml-comment'>&lt;!ATTLIST root version CDATA #FIXED "1.0"></span> <span class='xml-markup'>--></span>
+  <span class='xml-markup'>&lt;</span><span class='xml-ename'>optional</span><span class='xml-markup'>></span>
+   <span class='xml-markup'>&lt;</span><span class='xml-ename'>attribute</span> <span class='xml-aname'>name</span><span class='xml-markup'>="</span><span class='xml-avalue'>version</span><span class='xml-markup'>"></span>
+    <span class='xml-markup'>&lt;</span><span class='xml-ename'>value</span><span class='xml-markup'>></span><span class='xml-avalue'>1.0</span><span class='xml-markup'>&lt;/</span><span class='xml-ename'>value</span><span class='xml-markup'>></span>
+   <span class='xml-markup'>&lt;/</span><span class='xml-ename'>attribute</span><span class='xml-markup'>></span>
+  <span class='xml-markup'>&lt;/</span><span class='xml-ename'>optional</span><span class='xml-markup'>></span>
+ <span class='xml-markup'>&lt;/</span><span class='xml-ename'>define</span><span class='xml-markup'>></span>
+ ...
+<span class='xml-markup'>&lt;/</span><span class='xml-ename'>grammar</span><span class='xml-markup'>></span>
+</pre>
+<p>
+This can be a very convenient way to convert existing DTDs in
+order to transition to using Relax NG. 
+
+<a name='conversion.more'></a>
+<h3>More Powerful Conversions</h3>
+<p>
+The un-flattened DTDx document provides enough information to 
+analyze the DTD declarations and produce more meaningful XML
+Schema and Relax NG content types. However, no stylesheet or 
+code is currently provided with NekoDTD to perform this type of 
+processing. [<span class='note'>If you would like to write
+such a stylesheet or a tool to perform this conversion from
+the DTDx file, please 
+<a href='mailto:andyc@apache.org'>contact me</a>.</span>]
+
+<div class='copyright'>
+(C) Copyright 2002-2004, Andy Clark. All rights reserved.
+</div>

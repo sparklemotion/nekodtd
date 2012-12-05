@@ -1,0 +1,10 @@
+<!DOCTYPE root SYSTEM 'test.dtd'>
+<root>
+ <bar>text1</bar>
+ <baz>text2</baz>
+ <foo/>
+ <bar>text3</bar>
+ <baz>text4</baz>
+ <bar>text5</bar>
+ <baz><mumble>text5<foo/></mumble></baz>
+</root>

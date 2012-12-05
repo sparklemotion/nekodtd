@@ -1,0 +1,6 @@
+<!ELEMENT root (foo|(bar,baz)+)*>
+<!ATTLIST root version CDATA #FIXED '1.0'>
+<!ELEMENT foo EMPTY>
+<!ELEMENT bar (#PCDATA)>
+<!ELEMENT baz (#PCDATA|mumble)*>
+<!ELEMENT mumble ANY>
