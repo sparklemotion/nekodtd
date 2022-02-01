@@ -101,6 +101,7 @@
  <target name='doc' unless='docs.done'>
   <mkdir dir='doc/dtd/javadoc'/>
   <javadoc packagenames='${package},${package}.parsers'
+           classpathref='classpath'
            sourcepath='src/dtd' destdir='doc/dtd/javadoc'
            author='true' version='true' use='true'
            windowtitle="${Name} Implementation"
