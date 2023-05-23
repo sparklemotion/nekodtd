@@ -15,6 +15,7 @@ build_file = "build-dtd.xml"
 pom_file = "pom.xml"
 generated_jar = "./#{name}.jar"
 bundle_dir = "bundle"
+ant_version = "1.10.13"
 
 # check version
 build_xml = File.read(build_file)
@@ -30,8 +31,27 @@ pom_version = pom_version_node.content
 raise "Fix versions #{build_version} vs #{pom_version}" unless build_version == pom_version
 puts "building #{build_version}"
 
-# build
-sh "ant -f #{build_file}"
+# install ant
+ant_dir = "apache-ant-#{ant_version}"
+ant_bin_dir = File.join(ant_dir, "bin")
+ant_bin = File.join(ant_bin_dir, "ant")
+unless Dir.exist?(ant_dir) && Dir.exist?(ant_bin_dir) && File.exist?(ant_bin)
+  ant_tar = "apache-ant-#{ant_version}-bin.tar.gz"
+  ant_url = "https://dlcdn.apache.org/ant/binaries/#{ant_tar}"
+  sh "curl -O #{ant_url}"
+  sh "tar -xzf #{ant_tar}"
+end
+
+# build in a java 8 container
+image_name = "jruby:9.4-jdk8"
+command = <<~SH
+  docker run -it \
+    --mount=type=bind,source=#{Dir.pwd},target=/nekodtd-mount \
+    --workdir=/nekodtd-mount \
+    #{image_name} \
+    #{ant_bin} -f #{build_file}
+SH
+sh command
 
 # assemble files
 target_name = "#{name}-#{build_version}"
