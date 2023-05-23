@@ -5,6 +5,12 @@ I created this repo from the latest tar file that is in the download section.
 
 For the original project page, see http://people.apache.org/~andyc/neko/doc/dtd/index.html
 
+
+# Building and packaging
+
+Run `./build.rb` and make sure to sign with a relevant GPG key.
+
+
 # Copyright
 
 The CyberNeko Software License, Version 1.0
