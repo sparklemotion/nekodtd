@@ -6,9 +6,28 @@ I created this repo from the latest tar file that is in the download section.
 For the original project page, see http://people.apache.org/~andyc/neko/doc/dtd/index.html
 
 
-# Building and packaging
+# Release process
+
+## Building and packaging
 
 Run `./build.rb` and make sure to sign with a relevant GPG key.
+
+## Upload to Maven Central
+
+Follow instructions at https://central.sonatype.org/publish/publish-manual/#bundle-creation
+
+- log in to https://s01.oss.sonatype.org/
+- click "Staging Upload"
+- select "Artifact Bundle"
+- Upload the `bundle.jar` created by `build.rb`
+
+## Release
+
+Follow instructions at https://central.sonatype.org/publish/release/#locate-and-examine-your-staging-repository
+
+- find the Staging Repository
+- select it
+- If everything looks good, hit the "Release" button
 
 
 # Copyright
