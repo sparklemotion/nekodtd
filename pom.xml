@@ -1,4 +1,5 @@
 <project>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>org.nokogiri</groupId>
   <artifactId>nekodtd</artifactId>
   <name>Neko DTD</name>
