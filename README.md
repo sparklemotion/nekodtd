@@ -3,7 +3,7 @@
 This repo is a mirror of the original NekoDTD. Although I couldn't find the original repo
 I created this repo from the latest tar file that is in the download section.
 
-For the original project page, see http://people.apache.org/~andyc/neko/doc/dtd/index.html
+For the original project page, see [http://people.apache.org/~andyc/neko/doc/dtd/index.html](https://web.archive.org/web/20090504214338/http://people.apache.org/~andyc/neko/doc/dtd/index.html)
 
 
 # Release process
